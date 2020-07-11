@@ -17,6 +17,7 @@ fn main() {
         .flag(Flag::new("bye", "cli [name] --bye(-b)", FlagType::Bool).alias("b"))
         .flag(Flag::new("age", "cli [name] --age(-a)", FlagType::Int).alias("a"))
         .command(calc_command())
+        .command(create_account())
         .command(init());
 
     app.run(args);
@@ -39,6 +40,29 @@ fn init() -> Command {
         .name("init")
         .usage("cli [dir]")
         .action(init_action)
+}
+
+fn create_account() -> Command {
+    Command::new()
+        .name("create-account")
+        .usage("cli [name] [pub-addr]")
+        .action(create_account_action)
+}
+
+fn create_account_action(c: &Context) {
+    let mut args = c.args.iter();
+    let mut name = "";
+    let mut pub_addr = "";
+    let arg_count = args.clone().count();
+    match arg_count {
+       2 => {
+           name = args.next().unwrap();
+           pub_addr = args.next().unwrap();
+
+           println!("{}\n{}", name, pub_addr)
+       },
+       _ => ()
+    };
 }
 
 fn init_action(c: &Context) {
