@@ -2,8 +2,9 @@
 extern crate seahorse;
 extern crate cli_starter;
 
-use seahorse::{App, Command, Context, Flag, FlagType};
+use std::path::{Path, PathBuf};
 use std::env;
+use seahorse::{App, Command, Context, Flag, FlagType};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -15,7 +16,8 @@ fn main() {
         .action(default_action)
         .flag(Flag::new("bye", "cli [name] --bye(-b)", FlagType::Bool).alias("b"))
         .flag(Flag::new("age", "cli [name] --age(-a)", FlagType::Int).alias("a"))
-        .command(calc_command());
+        .command(calc_command())
+        .command(init());
 
     app.run(args);
 }
@@ -30,6 +32,36 @@ fn default_action(c: &Context) {
     if let Some(age) = c.int_flag("age") {
         println!("{:?} is {} years old", c.args, age);
     }
+}
+
+fn init() -> Command {
+    Command::new()
+        .name("init")
+        .usage("cli [dir]")
+        .action(init_action)
+}
+
+fn init_action(c: &Context) {
+    let mut args = c.args.iter();
+    let mut path = "";
+    let arg_count = args.clone().count();
+    match arg_count {
+       1 => {
+           path = args.next().unwrap();
+       },
+       _ => ()
+    };
+
+    let mut use_path: PathBuf;
+    if path != "" {
+        use_path = env::current_dir().unwrap();
+        use_path.push(path);
+        //use_path = Path::new(path).to_path_buf();
+    } else {
+        use_path = env::current_dir().unwrap();
+    }
+
+    println!("{:?}", use_path);
 }
 
 fn calc_action(c: &Context) {
