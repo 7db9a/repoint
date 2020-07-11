@@ -2,12 +2,12 @@ version: "3"
 
 services:
   coding:
-    image: cli-starter:0.1.0
+    image: repoint:0.1.0
     volumes:
-      - ./:/cli-starter
-      - cli-starter-cargo-data:/usr/local/cargo
+      - ./:/repoint
+      - repoint-cargo-data:/usr/local/cargo
     tty: true
 
 volumes:
- cli-starter-cargo-data:
+ repoint-cargo-data:
    external: true
