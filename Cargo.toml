@@ -15,3 +15,5 @@ path = "src/mod.rs"
 
 [dependencies]
 seahorse = "0.7.1"
+toml = "0.5"
+toml_edit = "0.1.5"
