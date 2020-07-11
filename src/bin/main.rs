@@ -4,6 +4,7 @@ extern crate cli_starter;
 
 use std::path::{Path, PathBuf};
 use std::env;
+use std::fs::File;
 use seahorse::{App, Command, Context, Flag, FlagType};
 
 fn main() {
@@ -68,6 +69,7 @@ fn create_account_action(c: &Context) {
 fn init_action(c: &Context) {
     let mut args = c.args.iter();
     let mut path = "";
+    let mut pathbuf: PathBuf;
     let arg_count = args.clone().count();
     match arg_count {
        1 => {
@@ -76,16 +78,16 @@ fn init_action(c: &Context) {
        _ => ()
     };
 
-    let mut use_path: PathBuf;
-    if path != "" {
-        use_path = env::current_dir().unwrap();
-        use_path.push(path);
-        //use_path = Path::new(path).to_path_buf();
+    pathbuf = if path == "" {
+        PathBuf::from("repoint.toml")
     } else {
-        use_path = env::current_dir().unwrap();
-    }
+        let mut p = PathBuf::from(path);
+        p.push("repoint.toml");
+        p
+    };
 
-    println!("{:?}", use_path);
+    println!("{:?}", pathbuf);
+    File::create(pathbuf).expect("Failed to create file.");
 }
 
 fn calc_action(c: &Context) {
