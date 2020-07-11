@@ -24,7 +24,7 @@ pub enum RepointFileState {
 /// Creates a repoint file with basic info.
 pub fn init<T: AsRef<str>>(path: T, version: T) -> Result<Document, RepointFileError> {
     let toml = format!(
-        r#"['repoint']
+        r#"['repository']
 version = "{}""#,
         version.as_ref(),
     );
@@ -55,7 +55,7 @@ pub fn write<T: AsRef<str>>(toml_doc: Document, path: T) -> Result<(), RepointFi
 /// toml value into method, that other fields can be validated.
 pub fn is_valid(doc: &Document) -> RepointFileState {
     let mut valid: RepointFileState;
-    let version = entry_exists(&doc, "repoint", Some("version"));
+    let version = entry_exists(&doc, "repository", Some("version"));
 
     if version {
         valid = RepointFileState::Valid;
@@ -143,7 +143,7 @@ fn insert_entry_new_doc<T: AsRef<str>>(
 ) -> Result<Document, RepointFileError> {
     let mut toml_add: String;
     let toml = doc.to_string();
-    if key.as_ref() == "repoint" {
+    if key.as_ref() == "repository" {
         toml_add = format!(
             r#"
 ['{}']
@@ -214,7 +214,7 @@ pub fn add_entry<T: AsRef<str>>(
         let err = Error::new("repoint file doesn't exist", ErrorKind::NoFile);
         Err(RepointFileError::from(err))
     } else if file_name.is_none() {
-        let entry_exists = entry_exists(&doc, "repoint", Some(name.as_ref()));
+        let entry_exists = entry_exists(&doc, "repository", Some(name.as_ref()));
         if !entry_exists {
             insert_entry(&doc, None, name.as_ref(), repoint.as_ref())
         } else {
@@ -272,9 +272,9 @@ pub fn update_entry<T: AsRef<str>>(
             Err(RepointFileError::from(err))
         }
     } else {
-        let entry_exists = entry_exists(&doc, "repoint", Some(repoint.as_ref()));
+        let entry_exists = entry_exists(&doc, "repository", Some(repoint.as_ref()));
         if entry_exists {
-            insert_entry(&doc, Some("repoint"), key.as_ref(), repoint.as_ref())
+            insert_entry(&doc, Some("repository"), key.as_ref(), repoint.as_ref())
         } else {
             let err = Error::new(
                 "file entry doesn't exist in repoint file",
@@ -501,7 +501,7 @@ xpriv = "XPRIV"
 
     #[test]
     fn toml_append() {
-        let repoint_fields = r#"['repoint']
+        let repoint_fields = r#"['repository']
 version = "0.1.0""#;
 
         let toml = repoint_fields
@@ -513,7 +513,7 @@ version = "0.1.0""#;
 ['1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG']
 xpriv = "XPRIV""#;
 
-        let expected = r#"['repoint']
+        let expected = r#"['repository']
 version = "0.1.0"
 
 ['1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG']
@@ -575,7 +575,7 @@ mod integration {
         let doc = open(gpath).unwrap();
         let is_valid = is_valid(&doc);
         let doc = open(gpath).unwrap();
-        let expected = r#"['repoint']
+        let expected = r#"['repository']
 version = "0.1.0"
 "#;
         fixture.teardown(true);
@@ -657,7 +657,7 @@ version = "0.1.0"
 
         //let mut doc = toml_string.parse::<Document>().expect("failed to get toml doc");
         //doc["1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG"].as_inline_table_mut().map(|t| t.fmt());
-        let expected = r#"['repoint']
+        let expected = r#"['repository']
 version = "0.1.0"
 
 ['1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG']
@@ -727,7 +727,7 @@ xpriv = "XPRIV"
         let new_doc = delete_entry(doc, "1JvFXyZMC31ShnD8PSKgN1HKQ2kGQLVpCt").unwrap();
         write(new_doc.clone(), gpath).expect("failed to write toml to disk");
 
-        let expected = r#"['repoint']
+        let expected = r#"['repository']
 version = "0.1.0"
 
 ['1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG']
