@@ -10,8 +10,11 @@ path = "src/bin/main.rs"
 doc = false
 
 [lib]
-name = "cli_starter"
+name = "repoint"
 path = "src/mod.rs"
 
 [dependencies]
 seahorse = "0.7.1"
+toml = "0.5"
+toml_edit = "0.1.5"
+fixture = { path = "fixture" }
