@@ -99,7 +99,7 @@ pub fn repoint<T: AsRef<str>>(
 /// `path` paramaters is the path to the repoint file.
 pub fn exists<T: AsRef<str>>(path: T, name: T) -> bool {
     let doc = open(path.as_ref()).unwrap();
-    repoint(&doc, Some(name.as_ref()), "xpriv").is_ok()
+    repoint(&doc, Some(name.as_ref()), "name").is_ok()
 }
 
 /// See if an entry exists, with an optional nested key.
@@ -170,11 +170,11 @@ fn insert_entry_same_doc<T: AsRef<str>>(
         let mut doc = doc.clone();
         if !entry_exists(&doc, _file_name.as_ref(), None) {
             let toml = doc.to_string();
-            if key.as_ref() == "xpriv" {
+            if key.as_ref() == "name" {
                 let toml_add = format!(
                     r#"
 ['{}']
-xpriv = "{}""#,
+name = "{}""#,
                     _file_name.as_ref(),
                     repoint.as_ref()
                 );
@@ -445,18 +445,18 @@ c = { d = "hello" }
     #[test]
     fn toml_edit_set_file_realistic() {
         let toml = r#"
-['1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG']
-xpriv = "XPRIV"
+['example']
+name = "name"
         "#;
         let mut doc = toml.parse::<Document>().expect("invalid doc");
         assert_eq!(doc.to_string(), toml);
-        doc["1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG"]["xpriv"] = value("XPRIV");
+        doc["example"]["name"] = value("name");
         // Commenting out won't fail test.
-        doc["1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG"].as_inline_table_mut().map(|t| t.fmt());
+        doc["example"].as_inline_table_mut().map(|t| t.fmt());
 
         let expected = r#"
-['1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG']
-xpriv = "XPRIV"
+['example']
+name = "name"
         "#;
         assert_eq!(doc.to_string(), expected);
     }
@@ -464,12 +464,12 @@ xpriv = "XPRIV"
     #[test]
     fn toml_edit_get_nested_item() {
         let toml = r#"
-['1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG']
-xpriv = "XPRIV"
+['example']
+name = "name"
         "#;
         let doc = toml.parse::<Document>().expect("invalid doc");
-        let repoint = doc["1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG"]["xpriv"].as_str();
-        let expected_repoint = "XPRIV";
+        let repoint = doc["example"]["name"].as_str();
+        let expected_repoint = "name";
 
         assert_eq!(repoint.unwrap(), expected_repoint)
     }
@@ -477,26 +477,26 @@ xpriv = "XPRIV"
     #[test]
     fn toml_edit_set_get_nested_realistic() {
         let toml = r#"
-['1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG']
-xpriv = "XPRIV"
+['example']
+name = "name"
         "#;
         let mut doc = toml.parse::<Document>().expect("invalid doc");
         assert_eq!(doc.to_string(), toml);
-        doc["1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG"]["xpriv"] = value("XPRIV");
+        doc["example"]["name"] = value("name");
         // Commenting out won't fail test.
-        doc["1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG"].as_inline_table_mut().map(|t| t.fmt());
+        doc["example"].as_inline_table_mut().map(|t| t.fmt());
 
         let expected = r#"
-['1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG']
-xpriv = "XPRIV"
+['example']
+name = "name"
         "#;
 
         assert_eq!(doc.to_string(), expected);
         assert_eq!(
-            doc["1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG"]["xpriv"].as_str().unwrap(),
-            "XPRIV"
+            doc["example"]["name"].as_str().unwrap(),
+            "name"
         );
-        assert_eq!(doc["1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG"]["xpriv"].as_str().unwrap(), "XPRIV")
+        assert_eq!(doc["example"]["name"].as_str().unwrap(), "name")
     }
 
     #[test]
@@ -510,14 +510,14 @@ version = "0.1.0""#;
         let toml_string = toml.to_string();
 
         let repoint_fields = r#"
-['1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG']
-xpriv = "XPRIV""#;
+['example']
+name = "name""#;
 
         let expected = r#"['repository']
 version = "0.1.0"
 
-['1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG']
-xpriv = "XPRIV"
+['example']
+name = "name"
 "#;
 
         let new_toml_string = toml_string + repoint_fields;
@@ -556,13 +556,13 @@ mod integration {
         let doc = open(repoint_path.as_ref()).unwrap();
         let doc = add_entry(
             &doc,
-            Some("1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG"),
-            "xpriv",
-            "XPRIV",
+            Some("example"),
+            "name",
+            "name",
         )
         .unwrap();
         write(doc.clone(), repoint_path.as_ref()).expect("failed to write toml to disk");
-        let repoint_res = repoint(&doc, Some("1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG"), "xpriv");
+        let repoint_res = repoint(&doc, Some("example"), "name");
 
         (doc, repoint_res)
     }
@@ -591,15 +591,15 @@ version = "0.1.0"
         let doc = open(gpath).unwrap();
         let doc = add_entry(
             &doc,
-            Some("1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG"),
-            "xpriv",
-            "XPRIV",
+            Some("example"),
+            "name",
+            "name",
         )
         .unwrap();
         write(doc.clone(), gpath).expect("failed to write toml to disk");
-        let repoint_res = repoint(&doc, Some("1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG"), "xpriv").unwrap();
+        let repoint_res = repoint(&doc, Some("example"), "name").unwrap();
         fixture.teardown(true);
-        assert_eq!(repoint_res, "XPRIV");
+        assert_eq!(repoint_res, "name");
     }
 
     #[test]
@@ -612,14 +612,14 @@ version = "0.1.0"
         // Focus of test.
         let result = add_entry(
             &doc,
-            Some("1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG"),
-            "xpriv",
-            "XPRIV_OTHER",
+            Some("example"),
+            "name",
+            "name_OTHER",
         );
 
         fixture.teardown(true);
 
-        assert_eq!(repoint.unwrap(), "XPRIV");
+        assert_eq!(repoint.unwrap(), "name");
         assert!(result.is_err());
     }
 
@@ -632,9 +632,9 @@ version = "0.1.0"
         let doc = open(gpath).unwrap();
         let result = update_entry(
             &doc,
-            Some("1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG"),
-            "xpriv",
-            "XPRIV",
+            Some("example"),
+            "name",
+            "name",
         );
 
         fixture.teardown(true);
@@ -656,12 +656,12 @@ version = "0.1.0"
         let doc = open(gpath).unwrap();
 
         //let mut doc = toml_string.parse::<Document>().expect("failed to get toml doc");
-        //doc["1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG"].as_inline_table_mut().map(|t| t.fmt());
+        //doc["example"].as_inline_table_mut().map(|t| t.fmt());
         let expected = r#"['repository']
 version = "0.1.0"
 
-['1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG']
-xpriv = "XPRIV"
+['example']
+name = "name"
 "#;
 
         fixture.teardown(true);
@@ -677,9 +677,9 @@ xpriv = "XPRIV"
         let mut fixture = setup_test(path, "0.1.0");
         let (doc, _) = setup_add(gpath);
 
-        assert_eq!(entry_exists(&doc, "1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG", None), true);
+        assert_eq!(entry_exists(&doc, "example", None), true);
 
-        assert_eq!(exists(gpath, "1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG"), true);
+        assert_eq!(exists(gpath, "example"), true);
 
         assert_eq!(entry_exists(&doc, "NOT_REAL_BITCON_ADD_A", None), false);
 
@@ -697,17 +697,17 @@ xpriv = "XPRIV"
         // Focus of test.
         let doc = update_entry(
             &doc,
-            Some("1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG"),
-            "xpriv",
+            Some("example"),
+            "name",
             "SHOULDNT DO THIS",
         )
         .unwrap();
         write(doc.clone(), gpath).expect("failed to write toml to disk");
-        let updated_repoint_res = repoint(&doc, Some("1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG"), "xpriv").unwrap();
+        let updated_repoint_res = repoint(&doc, Some("example"), "name").unwrap();
 
         fixture.teardown(true);
 
-        assert_eq!(repoint_res.unwrap(), "XPRIV");
+        assert_eq!(repoint_res.unwrap(), "name");
         assert_eq!(updated_repoint_res, "SHOULDNT DO THIS");
     }
 
@@ -718,9 +718,9 @@ xpriv = "XPRIV"
 
         let (doc, _) = setup_add(gpath.as_str());
 
-        let lib_exists = entry_exists(&doc, "1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG", None);
+        let lib_exists = entry_exists(&doc, "example", None);
 
-        let doc = add_entry(&doc, Some("1JvFXyZMC31ShnD8PSKgN1HKQ2kGQLVpCt"), "xpriv", "XPRIV").unwrap();
+        let doc = add_entry(&doc, Some("1JvFXyZMC31ShnD8PSKgN1HKQ2kGQLVpCt"), "name", "name").unwrap();
 
         write(doc.clone(), gpath.as_str()).expect("failed to write toml to disk");
 
@@ -730,8 +730,8 @@ xpriv = "XPRIV"
         let expected = r#"['repository']
 version = "0.1.0"
 
-['1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG']
-xpriv = "XPRIV"
+['example']
+name = "name"
 "#;
 
         assert_eq!(lib_exists, true);
@@ -755,24 +755,24 @@ xpriv = "XPRIV"
         let doc = open(gpath).unwrap();
         let doc = add_entry(
             &doc,
-            Some("1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG"),
-            "xpriv",
-            "XPRIV",
+            Some("example"),
+            "name",
+            "name",
         )
         .unwrap();
         write(doc.clone(), gpath).expect("failed to write toml to disk");
-        let repoint_res = repoint(&doc, Some("1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG"), "xpriv").unwrap();
+        let repoint_res = repoint(&doc, Some("example"), "name").unwrap();
 
-        assert_eq!(repoint_res, "XPRIV");
+        assert_eq!(repoint_res, "name");
 
         // Focus of test.
         let doc = open(gpath).unwrap();
-        let doc = delete_entry(doc.clone(), "1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG").expect("failed to delete entry");
+        let doc = delete_entry(doc.clone(), "example").expect("failed to delete entry");
         write(doc, gpath).expect("failed to write toml to disk");
 
         let result = {
             let doc = open("/tmp/repoint_tests/repoint").unwrap();
-            repoint(&doc, Some("1LrTstQYNZj8wCvBgipJqL9zghsofpsHEG"), "xpriv")
+            repoint(&doc, Some("example"), "name")
         };
 
         assert_eq!(result.is_ok(), false);

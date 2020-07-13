@@ -40,8 +40,9 @@ $ repoint init
 
 It creates this repoint.toml in the current directory.
 
+[repository]
 ```
-repo = "example"
+name = "example"
 account = "repoint-demo"
 address = "$bitcoin-adress"
 ```

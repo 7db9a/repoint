@@ -1,11 +1,12 @@
 #[macro_use]
 extern crate seahorse;
-extern crate cli_starter;
+extern crate repoint;
 
 use std::path::{Path, PathBuf};
 use std::env;
 use std::fs::File;
 use seahorse::{App, Command, Context, Flag, FlagType};
+use repoint::repoint_file;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -88,6 +89,12 @@ fn init_action(c: &Context) {
 
     println!("{:?}", pathbuf);
     File::create(pathbuf).expect("Failed to create file.");
+
+    //let doc = init(
+    //    pathbuf.as_ref(),
+    //    "0.1.0",
+    //).unwrap();
+    //write(doc.clone(), repoint_path).expect("failed to write toml to disk");
 }
 
 fn calc_action(c: &Context) {

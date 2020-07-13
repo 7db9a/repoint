@@ -10,7 +10,7 @@ path = "src/bin/main.rs"
 doc = false
 
 [lib]
-name = "cli_starter"
+name = "repoint"
 path = "src/mod.rs"
 
 [dependencies]
