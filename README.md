@@ -28,7 +28,7 @@ $ repoint get --addr $addr --show-name
 
 Create a new account. You'll need to own a bitcoinsv address.
 
-$ repoint create account --name repoint-demo --pubaddr $bitcoin-addr
+$ repoint create account NAME PUBADDR
 
 It'll save the data to $HOME/.repoint.
 
