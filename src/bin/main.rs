@@ -1,6 +1,7 @@
 #[macro_use]
 extern crate seahorse;
 extern crate repoint;
+extern crate dirs;
 
 use std::path::{Path, PathBuf};
 use std::env;
@@ -65,6 +66,24 @@ fn create_account_action(c: &Context) {
        },
        _ => ()
     };
+
+    let mut pathbuf = dirs::home_dir().unwrap();
+    pathbuf.push(".repoint");
+    pathbuf.push("account.toml");
+
+    println!("{:?}", pathbuf);
+    //File should already exist from install.
+    File::create(&pathbuf).expect("Failed to create file.");
+
+    let doc = repoint_file::init_account(
+        pathbuf.as_path().to_str().unwrap(),
+        name,
+        pub_addr
+    ).unwrap();
+
+    //repoint_file::write(doc.clone(), repoint_path.as_ref()).expect("failed to write toml to disk");
+    repoint_file::write(doc.clone(),pathbuf.as_path().to_str().unwrap()).expect("failed to write toml to disk");
+    //let repoint_res = repoint_file::repoint(&doc, Some("example"), "name");
 }
 
 fn init_action(c: &Context) {
