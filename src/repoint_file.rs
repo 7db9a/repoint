@@ -35,13 +35,15 @@ version = "{}""#,
 }
 
 /// Creates a repoint file with basic info.
-pub fn init_account<T: AsRef<str>>(path: T, name: T, pubaddr: T) -> Result<Document, RepointFileError> {
+pub fn init_account<T: AsRef<str>>(path: T, name: T, pubaddr: T, xpriv: T) -> Result<Document, RepointFileError> {
     let toml = format!(
         r#"['account']
 name = "{}"
-pubaddr = "{}""#,
+pubaddr = "{}"
+xpriv = "{}""#,
         name.as_ref(),
         pubaddr.as_ref(),
+        xpriv.as_ref(),
     );
 
     let doc = toml.parse::<Document>()?;

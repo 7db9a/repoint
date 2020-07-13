@@ -56,13 +56,15 @@ fn create_account_action(c: &Context) {
     let mut args = c.args.iter();
     let mut name = "";
     let mut pub_addr = "";
+    let mut xpriv = "";
     let arg_count = args.clone().count();
     match arg_count {
-       2 => {
+       3 => {
            name = args.next().unwrap();
            pub_addr = args.next().unwrap();
+           xpriv = args.next().unwrap();
 
-           println!("{}\n{}", name, pub_addr)
+           println!("{}\n{}\n{}", name, pub_addr, xpriv)
        },
        _ => ()
     };
@@ -78,7 +80,8 @@ fn create_account_action(c: &Context) {
     let doc = repoint_file::init_account(
         pathbuf.as_path().to_str().unwrap(),
         name,
-        pub_addr
+        pub_addr,
+        xpriv
     ).unwrap();
 
     //repoint_file::write(doc.clone(), repoint_path.as_ref()).expect("failed to write toml to disk");
