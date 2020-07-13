@@ -88,13 +88,13 @@ fn init_action(c: &Context) {
     };
 
     println!("{:?}", pathbuf);
-    File::create(pathbuf).expect("Failed to create file.");
+    File::create(&pathbuf).expect("Failed to create file.");
 
-    //let doc = init(
-    //    pathbuf.as_ref(),
-    //    "0.1.0",
-    //).unwrap();
-    //write(doc.clone(), repoint_path).expect("failed to write toml to disk");
+    let doc = repoint_file::init(
+        pathbuf.as_path().to_str().unwrap(),
+        "0.1.0",
+    ).unwrap();
+    repoint_file::write(doc.clone(),pathbuf.as_path().to_str().unwrap()).expect("failed to write toml to disk");
 }
 
 fn calc_action(c: &Context) {
