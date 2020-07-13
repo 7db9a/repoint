@@ -92,7 +92,7 @@ fn init_action(c: &Context) {
 
     let doc = repoint_file::init(
         pathbuf.as_path().to_str().unwrap(),
-        "0.1.0",
+        env!("CARGO_PKG_VERSION"),
     ).unwrap();
     repoint_file::write(doc.clone(),pathbuf.as_path().to_str().unwrap()).expect("failed to write toml to disk");
 }
