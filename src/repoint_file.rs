@@ -4,7 +4,7 @@ This module manages the specifics of the repoint file.
 extern crate toml;
 extern crate toml_edit;
 pub use toml_edit::{value, Document};
-use easy_hasher::easy_hasher::*;
+use easy_hasher::easy_hasher::sha256;
 
 use fixture;
 use err::Error;
@@ -13,6 +13,9 @@ pub use err::{ErrorKind, RepointFileError};
 use std::fs::File;
 pub use std::fs::read_to_string;
 use std::io::Write; // Not sure why, but file.write_all doesn't work without it. Not explicit to me.
+use std::path::PathBuf;
+use std::fs::OpenOptions;
+use std::io::prelude::*;
 
 /// Reveals the state of the repoint file.
 #[derive(Clone, Debug, PartialEq)]
@@ -332,24 +335,25 @@ pub fn delete_entry<T: AsRef<str>>(
     doc
 }
 
-//fn hash_file() -> std::io::Result<()> {
-//   //file.write_all(stuff.as_bytes()).unwrap();
-//   let path = PathBuf::new("account.toml");
-//
-//   let mut file = OpenOptions::new()
-//      .open(path)?;//path.clone().into_os_string().into_string().unwrap())
-//
-//    let mut contents = String::new();
-//    file.read_to_string(&mut contents)?;
-//
-//   let hash = sha256(&contents);
-//
-//   if let Err(e) = writeln!(file, "{}", hash.to_hex_string()) {
-//       eprintln!("Couldn't write to file: {}", e);
-//   }
-//
-//   OK(())
-//}
+fn hash_file() -> std::io::Result<()> {
+   //file.write_all(stuff.as_bytes()).unwrap();
+   let mut path = PathBuf::new();
+   path.push("account.toml");
+
+   let mut file = OpenOptions::new()
+      .open(path)?;//path.clone().into_os_string().into_string().unwrap())
+
+    let mut contents = String::new();
+    file.read_to_string(&mut contents)?;
+
+   let hash = sha256(&contents);
+
+   if let Err(e) = writeln!(file, "{}", hash.to_hex_string()) {
+       eprintln!("Couldn't write to file: {}", e);
+   }
+
+   Ok(())
+}
 
 mod err {
     pub use toml_edit::TomlError;
