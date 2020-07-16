@@ -361,12 +361,19 @@ pub fn hash_file(file: &str) -> std::io::Result<()> {
    let meta_res = metadata(hash_path.clone());
 
    match meta_res {
-       Ok(metadata) => {
-           if !metadata.is_file() {
+       Ok(m) => {
+           if m.is_dir() {
                repoint_hash_path.push(repoint_hash.to_hex_string());
-               std::fs::File::create(&repoint_hash_path).expect("failed to create hash file");
+               let meta_res = metadata(repoint_hash_path.clone());
+               match meta_res {
+                   Ok(m) => println!("Already exists: {:#?}", repoint_hash_path),
+                   Err(_) => {
+                       std::fs::File::create(&repoint_hash_path).expect("failed to create hash file");
+                       ()
+                   }
+               }
            } else {
-               println!("Already exists: {:#?}", repoint_hash_path)
+               println!("Unable to create repoint temp dir path.");
            }
        },
        Err(_) => println!("Something bad happened when trying to create a test file hash.")
