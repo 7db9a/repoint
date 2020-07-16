@@ -71,6 +71,10 @@ fn send_action(c: &Context) {
        _ => ()
     };
 
+    // Get file hash of account and repo tomls.
+    // If no match, use toml fields to write opreturn...
+    // and then save appropriate toml hashes to /tmp.
+
     let test: bool = (test == "test");
     println!("test: {}", test)
 }
