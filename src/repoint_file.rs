@@ -366,7 +366,7 @@ pub fn hash_file(file: &str) -> std::io::Result<()> {
                repoint_hash_path.push(repoint_hash.to_hex_string());
                let meta_res = metadata(repoint_hash_path.clone());
                match meta_res {
-                   Ok(m) => println!("Already exists: {:#?}", repoint_hash_path),
+                   Ok(m) => println!("Mock test: tx already exists: {:#?}", repoint_hash_path),
                    Err(_) => {
                        std::fs::File::create(&repoint_hash_path).expect("failed to create hash file");
                        ()
