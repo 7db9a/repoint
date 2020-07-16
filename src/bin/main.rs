@@ -21,7 +21,8 @@ fn main() {
         .flag(Flag::new("age", "cli [name] --age(-a)", FlagType::Int).alias("a"))
         .command(calc_command())
         .command(create_account())
-        .command(init());
+        .command(init())
+        .command(send());
 
     app.run(args);
 }
@@ -50,6 +51,28 @@ fn create_account() -> Command {
         .name("create-account")
         .usage("cli [name] [pub-addr]")
         .action(create_account_action)
+}
+
+fn send() -> Command {
+    Command::new()
+        .name("send")
+        .usage("cli [test]")
+        .action(send_action)
+}
+
+fn send_action(c: &Context) {
+    let mut args = c.args.iter();
+    let mut test = "";
+    let arg_count = args.clone().count();
+    match arg_count {
+       1 => {
+           test = args.next().unwrap();
+       },
+       _ => ()
+    };
+
+    let test: bool = (test == "test");
+    println!("test: {}", test)
 }
 
 fn create_account_action(c: &Context) {
