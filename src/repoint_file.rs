@@ -14,7 +14,7 @@ use std::fs::File;
 pub use std::fs::read_to_string;
 use std::io::Write; // Not sure why, but file.write_all doesn't work without it. Not explicit to me.
 use std::path::PathBuf;
-use std::fs::{create_dir_all, OpenOptions};
+use std::fs::{create_dir_all, metadata, OpenOptions};
 use std::io::prelude::*;
 
 /// Reveals the state of the repoint file.
@@ -351,8 +351,6 @@ pub fn hash_file(file: &str) -> std::io::Result<()> {
 
    let repoint_hash = sha256(&contents);
 
-   println!("repoint-hash: {:#?}", repoint_hash.to_hex_string());
-
    let mut hash_path = PathBuf::from("/tmp");
    hash_path.push("repoint");
    hash_path.push("test");
@@ -360,11 +358,12 @@ pub fn hash_file(file: &str) -> std::io::Result<()> {
    let mut repoint_hash_path = hash_path.clone();
    create_dir_all(&hash_path).expect("Failed to create directories.");
    repoint_hash_path.push(repoint_hash.to_hex_string());
-   std::fs::File::create(&repoint_hash_path).expect("failed to create hash file");
-   //if let Err(e) = writeln!(file, "{}", hash.to_hex_string()) {
-   //    eprintln!("Couldn't write to file: {}", e);
-   //}
 
+   if !metadata(repoint_hash_path.clone()).unwrap().is_file() {
+        std::fs::File::create(&repoint_hash_path).expect("failed to create hash file");
+   } else {
+       println!("Already exists: {:#?}", repoint_hash_path)
+   }
    Ok(())
 }
 

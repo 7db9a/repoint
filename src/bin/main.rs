@@ -5,7 +5,7 @@ extern crate dirs;
 
 use std::path::{Path, PathBuf};
 use std::env;
-use std::fs::File;
+use std::fs::{File, metadata};
 use seahorse::{App, Command, Context, Flag, FlagType};
 use repoint::repoint_file;
 
@@ -76,6 +76,7 @@ fn send_action(c: &Context) {
     // and then save appropriate toml hashes to /tmp.
 
     let test: bool = (test == "test");
+    
     if test {
         let mut account_pathbuf = dirs::home_dir().unwrap();
         account_pathbuf.push(".repoint");
