@@ -335,10 +335,28 @@ pub fn delete_entry<T: AsRef<str>>(
     doc
 }
 
-pub fn hash_file(file: &str) -> std::io::Result<()> {
+pub enum FileType {
+    Account,
+    Repo,
+}
+
+pub fn hash_file(file: FileType) -> std::io::Result<()> {
    //file.write_all(stuff.as_bytes()).unwrap();
-   let mut repoint_path = PathBuf::new();
-   repoint_path.push(file);
+   //
+
+   let repoint_path = match file {
+       FileType::Account => {
+           let mut account_path = dirs::home_dir().unwrap();
+           account_path.push(".repoint");
+           account_path.push("account.toml");
+           account_path
+       },
+       FileType::Repo => {
+           let mut repository_path = PathBuf::new();
+           repository_path.push("repoint.toml");
+           repository_path
+       }
+   };
 
    let mut file = OpenOptions::new()
       .read(true)

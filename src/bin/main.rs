@@ -78,12 +78,8 @@ fn send_action(c: &Context) {
     let test: bool = (test == "test");
     
     if test {
-        let mut account_pathbuf = dirs::home_dir().unwrap();
-        account_pathbuf.push(".repoint");
-        account_pathbuf.push("account.toml");
-        let account_path_str = account_pathbuf.as_path().to_str().unwrap();
-        repoint_file::hash_file("repoint.toml").expect("fail to write hash file");
-        repoint_file::hash_file(account_path_str).expect("fail to write account hash file");
+        repoint_file::hash_file(repoint_file::FileType::Account).expect("fail to write hash for account file");
+        repoint_file::hash_file(repoint_file::FileType::Repo).expect("fail to write hash for repository file");
     }
     println!("test: {}", test)
 }
