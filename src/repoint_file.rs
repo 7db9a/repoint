@@ -335,22 +335,28 @@ pub fn delete_entry<T: AsRef<str>>(
     doc
 }
 
-fn hash_file() -> std::io::Result<()> {
+pub fn hash_file() -> std::io::Result<()> {
    //file.write_all(stuff.as_bytes()).unwrap();
-   let mut path = PathBuf::new();
-   path.push("repoint.toml");
+   let mut repoint_path = PathBuf::new();
+   repoint_path.push("repoint.toml");
 
    let mut file = OpenOptions::new()
-      .open(path)?;//path.clone().into_os_string().into_string().unwrap())
+      .read(true)
+      .write(true)
+      .append(true)
+      .open(repoint_path)?;//path.clone().into_os_string().into_string().unwrap())
 
     let mut contents = String::new();
     file.read_to_string(&mut contents)?;
 
    let hash = sha256(&contents);
 
-   if let Err(e) = writeln!(file, "{}", hash.to_hex_string()) {
-       eprintln!("Couldn't write to file: {}", e);
-   }
+   println!("hash: {:#?}", hash.to_hex_string());
+
+   std::fs::File::create(&hash.to_hex_string()).expect("failed to create hash file");
+   //if let Err(e) = writeln!(file, "{}", hash.to_hex_string()) {
+   //    eprintln!("Couldn't write to file: {}", e);
+   //}
 
    Ok(())
 }

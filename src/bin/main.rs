@@ -76,6 +76,9 @@ fn send_action(c: &Context) {
     // and then save appropriate toml hashes to /tmp.
 
     let test: bool = (test == "test");
+    if test {
+        repoint_file::hash_file().expect("fail to write hash file");
+    }
     println!("test: {}", test)
 }
 
