@@ -357,13 +357,21 @@ pub fn hash_file(file: &str) -> std::io::Result<()> {
    hash_path.push("mock_send_filehashes");
    let mut repoint_hash_path = hash_path.clone();
    create_dir_all(&hash_path).expect("Failed to create directories.");
-   repoint_hash_path.push(repoint_hash.to_hex_string());
 
-   if !metadata(repoint_hash_path.clone()).unwrap().is_file() {
-        std::fs::File::create(&repoint_hash_path).expect("failed to create hash file");
-   } else {
-       println!("Already exists: {:#?}", repoint_hash_path)
+   let meta_res = metadata(hash_path.clone());
+
+   match meta_res {
+       Ok(metadata) => {
+           if !metadata.is_file() {
+               repoint_hash_path.push(repoint_hash.to_hex_string());
+               std::fs::File::create(&repoint_hash_path).expect("failed to create hash file");
+           } else {
+               println!("Already exists: {:#?}", repoint_hash_path)
+           }
+       },
+       Err(_) => println!("Something bad happened when trying to create a test file hash.")
    }
+
    Ok(())
 }
 
