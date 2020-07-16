@@ -349,17 +349,18 @@ pub fn hash_file() -> std::io::Result<()> {
     let mut contents = String::new();
     file.read_to_string(&mut contents)?;
 
-   let hash = sha256(&contents);
+   let repoint_hash = sha256(&contents);
 
-   println!("hash: {:#?}", hash.to_hex_string());
+   println!("repoint-hash: {:#?}", repoint_hash.to_hex_string());
 
    let mut hash_path = PathBuf::from("/tmp");
    hash_path.push("repoint");
    hash_path.push("test");
    hash_path.push("mock_send_filehashes");
+   let mut repoint_hash_path = hash_path.clone();
    create_dir_all(&hash_path).expect("Failed to create directories.");
-   hash_path.push(hash.to_hex_string());
-   std::fs::File::create(&hash_path).expect("failed to create hash file");
+   repoint_hash_path.push(repoint_hash.to_hex_string());
+   std::fs::File::create(&repoint_hash_path).expect("failed to create hash file");
    //if let Err(e) = writeln!(file, "{}", hash.to_hex_string()) {
    //    eprintln!("Couldn't write to file: {}", e);
    //}
