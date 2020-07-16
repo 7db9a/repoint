@@ -77,7 +77,7 @@ fn send_action(c: &Context) {
 
     let test: bool = (test == "test");
     if test {
-        repoint_file::hash_file().expect("fail to write hash file");
+        repoint_file::hash_file("repoint.toml").expect("fail to write hash file");
     }
     println!("test: {}", test)
 }

@@ -335,10 +335,10 @@ pub fn delete_entry<T: AsRef<str>>(
     doc
 }
 
-pub fn hash_file() -> std::io::Result<()> {
+pub fn hash_file(file: &str) -> std::io::Result<()> {
    //file.write_all(stuff.as_bytes()).unwrap();
    let mut repoint_path = PathBuf::new();
-   repoint_path.push("repoint.toml");
+   repoint_path.push(file);
 
    let mut file = OpenOptions::new()
       .read(true)
