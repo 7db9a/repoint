@@ -18,4 +18,5 @@ seahorse = "0.7.1"
 toml = "0.5"
 toml_edit = "0.1.5"
 dirs = "3.0.1"
+easy-hasher = "2.1.1"
 fixture = { path = "fixture" }
