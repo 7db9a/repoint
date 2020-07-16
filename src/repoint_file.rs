@@ -338,7 +338,7 @@ pub fn delete_entry<T: AsRef<str>>(
 fn hash_file() -> std::io::Result<()> {
    //file.write_all(stuff.as_bytes()).unwrap();
    let mut path = PathBuf::new();
-   path.push("account.toml");
+   path.push("repoint.toml");
 
    let mut file = OpenOptions::new()
       .open(path)?;//path.clone().into_os_string().into_string().unwrap())
