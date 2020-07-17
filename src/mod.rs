@@ -3,14 +3,15 @@ use std::process::Command;
 use cmd_lib::run_fun;
 
 pub fn init(cmd: String) -> Result<std::process::Output, std::io::Error> {
-    //let output = run_fun!("{}", cmd).unwrap();
      Command::new("sh")
         .arg(cmd)
+        //.arg(privkey) // get from account.toml
+        //.arg(opcode)  // hard-code
+        //.arg(msg)     // hard-code (app-ID)
+        //.arg(fee)     // cli arg
+        //.arg(rpc_url) // get from env var
+        //.arg(safe)
         .output()
-
-
-    //println!("{}", String::from_utf8_lossy(&output.stdout));
-    //println!("results:\n {}", output);
 }
 
 pub fn send_opreturn(test: bool) {
