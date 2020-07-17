@@ -2,16 +2,15 @@ pub mod repoint_file;
 use std::process::Command;
 use cmd_lib::run_fun;
 
-pub fn init(cmd: String)/* -> Result<std::process::Output, std::io::Error>*/ {
-    let output = run_fun!("{}", cmd).unwrap();
-    //let output_res = Command::new("bash")
-    //    .arg("opreturn-script.sh")
-    //    .output();
+pub fn init(cmd: String) -> Result<std::process::Output, std::io::Error> {
+    //let output = run_fun!("{}", cmd).unwrap();
+     Command::new("sh")
+        .arg(cmd)
+        .output()
 
-    //let output = output_res.unwrap();
 
-    //println!("results:\n {}", String::from_utf8_lossy(&output.stdout));
-    println!("results:\n {}", output);
+    //println!("{}", String::from_utf8_lossy(&output.stdout));
+    //println!("results:\n {}", output);
 }
 
 pub fn send_opreturn(test: bool) {
