@@ -340,64 +340,64 @@ pub enum FileType {
     Repo,
 }
 
-pub fn hash_file(file: FileType) -> std::io::Result<()> {
-   //file.write_all(stuff.as_bytes()).unwrap();
-   //
+pub fn hash_file(file: FileType) -> std::io::Result<bool> {
+    //file.write_all(stuff.as_bytes()).unwrap();
+    //
 
-   let repoint_path = match file {
-       FileType::Account => {
-           let mut account_path = dirs::home_dir().unwrap();
-           account_path.push(".repoint");
-           account_path.push("account.toml");
-           account_path
-       },
-       FileType::Repo => {
-           let mut repository_path = PathBuf::new();
-           repository_path.push("repoint.toml");
-           repository_path
-       }
-   };
+    let repoint_path = match file {
+        FileType::Account => {
+            let mut account_path = dirs::home_dir().unwrap();
+            account_path.push(".repoint");
+            account_path.push("account.toml");
+            account_path
+        },
+        FileType::Repo => {
+            let mut repository_path = PathBuf::new();
+            repository_path.push("repoint.toml");
+            repository_path
+        }
+    };
 
-   let mut file = OpenOptions::new()
-      .read(true)
-      .write(true)
-      .append(true)
-      .open(repoint_path)?;//path.clone().into_os_string().into_string().unwrap())
+    let mut file = OpenOptions::new()
+       .read(true)
+       .write(true)
+       .append(true)
+       .open(repoint_path)?;//path.clone().into_os_string().into_string().unwrap())
 
     let mut contents = String::new();
     file.read_to_string(&mut contents)?;
 
-   let repoint_hash = sha256(&contents);
+    let repoint_hash = sha256(&contents);
 
-   let mut hash_path = PathBuf::from("/tmp");
-   hash_path.push("repoint");
-   hash_path.push("test");
-   hash_path.push("mock_send_filehashes");
-   let mut repoint_hash_path = hash_path.clone();
-   create_dir_all(&hash_path).expect("Failed to create directories.");
+    let mut hash_path = PathBuf::from("/tmp");
+    hash_path.push("repoint");
+    hash_path.push("test");
+    hash_path.push("mock_send_filehashes");
+    let mut repoint_hash_path = hash_path.clone();
+    create_dir_all(&hash_path).expect("Failed to create directories.");
 
-   let meta_res = metadata(hash_path.clone());
+    let meta_res = metadata(hash_path.clone());
 
-   match meta_res {
-       Ok(m) => {
-           if m.is_dir() {
-               repoint_hash_path.push(repoint_hash.to_hex_string());
-               let meta_res = metadata(repoint_hash_path.clone());
-               match meta_res {
-                   Ok(m) => println!("Mock test: tx already exists: {:#?}", repoint_hash_path),
-                   Err(_) => {
-                       std::fs::File::create(&repoint_hash_path).expect("failed to create hash file");
-                       ()
-                   }
-               }
-           } else {
-               println!("Unable to create repoint temp dir path.");
-           }
-       },
-       Err(_) => println!("Something bad happened when trying to create a test file hash.")
-   }
+    match meta_res {
+        Ok(m) => {
+            if m.is_dir() {
+                repoint_hash_path.push(repoint_hash.to_hex_string());
+                let meta_res = metadata(repoint_hash_path.clone());
+                match meta_res {
+                    Ok(m) => println!("Mock test: tx already exists: {:#?}", repoint_hash_path),
+                    Err(_) => {
+                        std::fs::File::create(&repoint_hash_path).expect("failed to create hash file");
+                        ()
+                    }
+                }
+            } else {
+                println!("Unable to create repoint temp dir path.");
+            }
+        },
+        Err(_) => println!("Something bad happened when trying to create a test file hash.")
+    }
 
-   Ok(())
+    Ok(true)
 }
 
 mod err {
