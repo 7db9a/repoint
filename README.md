@@ -89,6 +89,7 @@ Account name's can't be changed. Repo name's can't be be changed. However, the a
 
 The app will be beta released with at least 12 functioning opcodes. Next major upgrade will have less than 20. There can be no more than 33 op-codes, one op-code must be dropped for every one added. For more complex functionality, build a protocol or tech layer on top of this protocol.
 
+```
 Name                              Op-code     Op-code appendix                  Message
 
 Instantiate repoint               0x33d00     $app-ID                           none
@@ -109,6 +110,7 @@ Follow repo                       0x33d014    $account-address $repo-index      
 Unfollow repo                     0x33d015    $account-address $repo-index      none
 Redirect account to account       0x33d016    $account-address                  none
 Redirect repo to repo             0x33d017    $account-address $repo-index      none
+```
 
 #### AppID
 
