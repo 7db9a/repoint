@@ -5,7 +5,7 @@ extern crate dirs;
 
 use std::path::{Path, PathBuf};
 use std::env;
-use std::fs::File;
+use std::fs::{File, metadata};
 use seahorse::{App, Command, Context, Flag, FlagType};
 use repoint::repoint_file;
 
@@ -21,7 +21,8 @@ fn main() {
         .flag(Flag::new("age", "cli [name] --age(-a)", FlagType::Int).alias("a"))
         .command(calc_command())
         .command(create_account())
-        .command(init());
+        .command(init())
+        .command(send());
 
     app.run(args);
 }
@@ -50,6 +51,44 @@ fn create_account() -> Command {
         .name("create-account")
         .usage("cli [name] [pub-addr]")
         .action(create_account_action)
+}
+
+fn send() -> Command {
+    Command::new()
+        .name("send")
+        .usage("cli [test]")
+        .action(send_action)
+}
+
+fn send_action(c: &Context) {
+    let mut args = c.args.iter();
+    let mut test = "";
+    let arg_count = args.clone().count();
+    let account_tx_already_exists: bool;
+    let repo_tx_already_exists: bool;
+    match arg_count {
+       1 => {
+           test = args.next().unwrap();
+       },
+       _ => ()
+    };
+
+    // Get file hash of account and repo tomls.
+    // If no match, use toml fields to write opreturn...
+    // and then save appropriate toml hashes to /tmp.
+
+    let test: bool = (test == "test");
+    
+    if test {
+        account_tx_already_exists = repoint_file::hash_file(repoint_file::FileType::Account).expect("fail to write hash for account file");
+        repo_tx_already_exists = repoint_file::hash_file(repoint_file::FileType::Repo).expect("fail to write hash for repository file");
+
+    } else {
+        account_tx_already_exists = false;
+        repo_tx_already_exists = false;
+
+    }
+    println!("test: {}", test)
 }
 
 fn create_account_action(c: &Context) {

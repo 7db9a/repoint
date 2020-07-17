@@ -4,6 +4,7 @@ This module manages the specifics of the repoint file.
 extern crate toml;
 extern crate toml_edit;
 pub use toml_edit::{value, Document};
+use easy_hasher::easy_hasher::sha256;
 
 use fixture;
 use err::Error;
@@ -12,6 +13,9 @@ pub use err::{ErrorKind, RepointFileError};
 use std::fs::File;
 pub use std::fs::read_to_string;
 use std::io::Write; // Not sure why, but file.write_all doesn't work without it. Not explicit to me.
+use std::path::PathBuf;
+use std::fs::{create_dir_all, metadata, OpenOptions};
+use std::io::prelude::*;
 
 /// Reveals the state of the repoint file.
 #[derive(Clone, Debug, PartialEq)]
@@ -329,6 +333,74 @@ pub fn delete_entry<T: AsRef<str>>(
     };
 
     doc
+}
+
+pub enum FileType {
+    Account,
+    Repo,
+}
+
+pub fn hash_file(file: FileType) -> std::io::Result<bool> {
+    //file.write_all(stuff.as_bytes()).unwrap();
+    //
+
+    let repoint_path = match file {
+        FileType::Account => {
+            let mut account_path = dirs::home_dir().unwrap();
+            account_path.push(".repoint");
+            account_path.push("account.toml");
+            account_path
+        },
+        FileType::Repo => {
+            let mut repository_path = PathBuf::new();
+            repository_path.push("repoint.toml");
+            repository_path
+        }
+    };
+
+    let mut file = OpenOptions::new()
+       .read(true)
+       .write(true)
+       .append(true)
+       .open(repoint_path)?;//path.clone().into_os_string().into_string().unwrap())
+
+    let mut contents = String::new();
+    file.read_to_string(&mut contents)?;
+
+    let repoint_hash = sha256(&contents);
+
+    let mut hash_path = PathBuf::from("/tmp");
+    hash_path.push("repoint");
+    hash_path.push("test");
+    hash_path.push("mock_send_filehashes");
+    let mut repoint_hash_path = hash_path.clone();
+    create_dir_all(&hash_path).expect("Failed to create directories.");
+
+    let meta_res = metadata(hash_path.clone());
+
+    let txs_already_exists = match meta_res {
+        Ok(m) => {
+            if m.is_dir() {
+                repoint_hash_path.push(repoint_hash.to_hex_string());
+                let meta_res = metadata(repoint_hash_path.clone());
+                match meta_res {
+                    Ok(m) => {
+                        println!("Mock test: tx already exists: {:#?}", repoint_hash_path);
+                        true
+                    },
+                    Err(_) => {
+                        std::fs::File::create(&repoint_hash_path).expect("failed to create hash file");
+                        false
+                    }
+                }
+            } else {
+                panic!("Unable to create repoint temp dir path.");
+            }
+        },
+        Err(_) => panic!("Something bad happened when trying to create a test file hash.")
+    };
+
+    Ok(txs_already_exists)
 }
 
 mod err {

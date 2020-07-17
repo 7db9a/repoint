@@ -79,25 +79,76 @@ repoint uses bitcoinsv to write op-return's using repoints protocol. You don't a
 
 ### Protocol
 
-Update account name               0x33d01
-Update profile text               0x33d02
-Update profile pic                0x33d03
-Update repo name                  0x33d04
-Update repo description           0x33d05
-Update repo tags                  0x33d06
-Add repo url                      0x33d07
-Remove repo url                   0x33d08  Give the index of the item
-Like repo                         0x33d09
-Unlike repo                       0x33d010
-Flag repo                         0x33d011
-Unflag                            0x33d012
-Tip repo                          0x33d013
-Follow repo                       0x33d014
-Unfollow repo                     0x33d015
+The first op-return is the application ID. A user account only exists if this code is the first opreturn of the address.
+
+There will be one account per addrress. There can be many repos per account.
+
+It's okay to have a single account named after a single repo. In this case, querying exactly a single name will return exactly a single result.
+
+Account name's can't be changed. Repo name's can't be be changed. However, the authorized user can point an account or repo to a new one.
+
+The app will be beta released with at least 12 functioning opcodes. Next major upgrade will have less than 20. There can be no more than 33 op-codes, one op-code must be dropped for every one added. For more complex functionality, build a protocol or tech layer on top of this protocol.
+
+0x72 is 'r', for repoiont, in hexedecimal.
+
+`$ echo -n 'r' | perl -pe 's/(.)/sprintf("\\x%x", ord($1))/eg'`
+
+```
+Name                              Op-code     Op-code appendix                  Message
+
+Instantiate repoint               0x720     $app-ID                           none
+Add account                       0x721                                       $account-name
+Update profile text               0x722                                       $text
+Update profile pic                0x723                                       $uri
+Add repo                          0x724                                       $repo-name
+Update repo description           0x725     $repo-index                       $text
+Update repo tags                  0x726     $repo-index                       $text
+Add repo url                      0x727     $repo-index                       $uri
+Remove repo url                   0x728     $repo-index                       $uri
+Like repo                         0x729     $account-address $repo-index      none
+Unlike repo                       0x7210    $account-address $repo-index      none
+Flag repo                         0x7211    $account-address $repo-index      none
+Unflag                            0x7212    $account-address $repo-index      none
+Tip repo                          0x7213    
+Follow repo                       0x7214    $account-address $repo-index      none
+Unfollow repo                     0x7215    $account-address $repo-index      none
+Redirect account to account       0x7216    $account-address                  none
+Redirect repo to repo             0x7217    $account-address $repo-index      none
+```
+
+#### AppID
+
+The first op-return is the application ID. If this code is present before all other opreturns, the account doesn't exist.
+
+The AppID will indicate the version of the protocol. The goal is to never break the developer interface. Never.
+
+The app will be beta released with at least 12 functioning opcodes. Next major upgrade will have less than 20. There can be no more than 33 op-codes, one op-code must be dropped for every one added. For more complex functionality, build a protocol or tech layer on top of this protocol.
+
+### Repo index driven
+
+Repository is an index of values. Each time a repo is addded, a repo index is incremented. There can be many accounts under an account.
+
+**Add repo**
+
+`0x724 ${$repo-index + 1} $new-repo-name`
+
+For the following fields, each has an op-code appendix of the the index of the repo it refers to.
+
+`op-code repo-index [op-code-appendix] [msg]`
+
+* Profile text
+
+* Profile pic
+
+* Repo description
+
+* Repo tags
+
+* Repo url
 
 ### Other protocols
 
-Other protocols can by layered on top of, such as for repo with ipfs or something.
+Other protocols or technoloigiescan by layered on top of, such as ipfs or inter-blockchain, to extend repoint for the needs of users, platforms, and lawful authorities.
 
 ## Notes
 
@@ -106,3 +157,9 @@ https://memo.cash/protocol
 https://github.com/bitcoin-sv-specs/op_return
 
 https://github.com/unwriter/datapay
+
+https://github.com/charleskca/bitcoin-sv-rpc
+
+https://github.com/AustEcon/bitsv
+
+https://github.com/AustEcon/bitsv/blob/master/bitsv/network/services/README.rst
