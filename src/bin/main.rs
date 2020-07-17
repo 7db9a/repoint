@@ -22,6 +22,7 @@ fn main() {
         .command(calc_command())
         .command(create_account())
         .command(init())
+        .flag(Flag::new("opreturn-script-path", "cli init --opreturn-script-path(-r)", FlagType::String).alias("r"))
         .command(send());
 
     app.run(args);
@@ -37,12 +38,17 @@ fn default_action(c: &Context) {
     if let Some(age) = c.int_flag("age") {
         println!("{:?} is {} years old", c.args, age);
     }
+
+    if let Some(opreturn_script_path) = c.string_flag("opreturn-script-path") {
+        println!("opreturn_script-path: {:?}", opreturn_script_path);
+    }
 }
 
 fn init() -> Command {
     Command::new()
         .name("init")
-        .usage("cli [dir]")
+        .usage("cli [dir] --opreturn-script-path(-r)")
+        .flag(Flag::new("opreturn-script-path", "cli init --opreturn-script-path(-r)", FlagType::String).alias("r"))
         .action(init_action)
 }
 
@@ -148,6 +154,9 @@ fn init_action(c: &Context) {
         p
     };
 
+    if let Some(opreturn_script_path) = c.string_flag("opreturn-script-path") {
+        println!("opreturn_script-path: {:?}", opreturn_script_path);
+    }
     println!("{:?}", pathbuf);
     File::create(&pathbuf).expect("Failed to create file.");
 
