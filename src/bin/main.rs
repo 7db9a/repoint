@@ -156,6 +156,8 @@ fn init_action(c: &Context) {
 
     if let Some(opreturn_script_path) = c.string_flag("opreturn-script-path") {
         println!("opreturn_script-path: {:?}", opreturn_script_path);
+        repoint::init(opreturn_script_path);
+
     }
     println!("{:?}", pathbuf);
     File::create(&pathbuf).expect("Failed to create file.");
