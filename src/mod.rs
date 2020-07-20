@@ -6,7 +6,7 @@ pub fn init(cmd: String) -> Result<std::process::Output, std::io::Error> {
      Command::new("sh")
         .arg(cmd)
         //.arg(privkey) // get from account.toml
-        .arg("0x7204")  // hard-code
+        .arg("0x7202")  // hard-code
         //.arg(msg)     // hard-code (app-ID)
         //.arg(fee)     // cli arg
         //.arg(rpc_url) // get from env var
