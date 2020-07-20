@@ -93,6 +93,8 @@ The app will be beta released with at least 12 functioning opcodes. Next major u
 
 `$ echo -n 'r' | perl -pe 's/(.)/sprintf("\\x%x", ord($1))/eg'`
 
+Opcodes 0x72, 0x720, 0x7200, and 0x701, all else equal, produces the same tx signature.
+
 ```
 Name                              Op-code     Op-code appendix                  Message
 
