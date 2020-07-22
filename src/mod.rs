@@ -1,5 +1,6 @@
 pub mod repoint_file;
 use std::process::Command;
+use std::path::PathBuf;
 use cmd_lib::run_fun;
 
 pub fn init(cmd: String, msg: String) -> Result<std::process::Output, std::io::Error> {
@@ -15,7 +16,12 @@ pub fn init(cmd: String, msg: String) -> Result<std::process::Output, std::io::E
 }
 
 pub fn get_privkey() -> String {
-    let toml_doc = repoint_file::open("/home/me/toml").expect("failed to open toml file");
+     let mut pathbuf = dirs::home_dir().unwrap();
+     pathbuf.push(".repoint");
+     pathbuf.push("account.toml");
+     let path = pathbuf.to_str().expect("fail to convert pathbuf into string");
+
+    let toml_doc = repoint_file::open(path).expect("failed to open toml file");
     toml_doc["acount"]["xpriv"]
         .as_str()
         .expect("fail to parse toml keys")
