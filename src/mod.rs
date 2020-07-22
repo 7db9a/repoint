@@ -14,6 +14,14 @@ pub fn init(cmd: String, msg: String) -> Result<std::process::Output, std::io::E
         .output()
 }
 
+pub fn get_privkey() -> String {
+    let toml_doc = repoint_file::open("/home/me/toml").expect("failed to open toml file");
+    toml_doc["acount"]["xpriv"]
+        .as_str()
+        .expect("fail to parse toml keys")
+        .to_string()
+}
+
 pub fn send_opreturn(test: bool) {
     if test {
 
