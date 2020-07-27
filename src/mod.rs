@@ -9,7 +9,7 @@ pub fn init(cmd: String, msg: String) -> Result<std::process::Output, std::io::E
         .arg(
             get_privkey()// get from account.toml
         )
-        .arg("0x7202")  // hard-code
+        .arg("0x7202".to_string())  // hard-code
         .arg(msg)     // hard-code (app-ID)
         //.arg(fee)     // cli arg
         //.arg(rpc_url) // get from env var
@@ -47,7 +47,7 @@ pub fn exists_opreturn(test: bool) {
 #[cfg(test)]
 mod account_toml {
     use std::path::PathBuf;
-    use super::get_privkey;
+    use super::{get_privkey, init};
 
     #[test]
     fn test_get_privkey() {
@@ -56,4 +56,15 @@ mod account_toml {
          assert_eq!(res, "test")
     }
 
+    #[test]
+    fn test_opreturn() {
+         let output = init(
+             "opreturn.sh".to_string(),
+             "$APP-ID".to_string()
+         ).expect("opreturn shell call failed");
+
+         let stdout = String::from_utf8_lossy(&output.stdout);
+
+         assert_eq!(stdout, "test")
+    }
 }

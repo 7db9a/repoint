@@ -6,7 +6,8 @@
 
 docker run --rm repoint_opreturn:0.1.0 node ./lib/opreturn.js \
 $1 \
-"$2" \
+$2
+"$3" \
 400 \
 https://api.mattercloud.net \
 true
