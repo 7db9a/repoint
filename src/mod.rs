@@ -69,6 +69,9 @@ mod account_toml {
 
          let stdout = String::from_utf8_lossy(&output.stdout);
 
-         assert_eq!(stdout, "test")
+         assert_eq!(
+             stdout,
+             "010000000001000000000000000018006a0272021268656c6c6f2066726f6d207265706f696e7400000000\n"
+        )
     }
 }
