@@ -3,13 +3,13 @@ use std::process::Command;
 use std::path::PathBuf;
 use cmd_lib::run_fun;
 
-pub fn sign(cmd: String, msg: String) -> Result<std::process::Output, std::io::Error> {
+pub fn sign(cmd: String, opcode: String, msg: String) -> Result<std::process::Output, std::io::Error> {
      Command::new("sh")
         .arg(cmd)
         .arg(
             get_privkey()// get from account.toml
         )
-        .arg("0x7202".to_string())  // hard-code
+        .arg(opcode)  // hard-code
         .arg(msg)     // hard-code (app-ID)
         //.arg(fee)     // cli arg
         //.arg(rpc_url) // get from env var
@@ -64,6 +64,7 @@ mod account_toml {
     fn test_opreturn() {
          let output = sign(
              "opreturn.sh".to_string(),
+             "0x7202".to_string(),
              "hello from repoint".to_string()
          ).expect("opreturn shell call failed");
 

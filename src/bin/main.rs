@@ -156,7 +156,7 @@ fn init_action(c: &Context) {
 
     if let Some(opreturn_script_path) = c.string_flag("opreturn-script-path") {
         println!("opreturn_script-path: {:?}", opreturn_script_path);
-        let output = repoint::sign(opreturn_script_path, String::from("hello from repoint")).expect("fail to get opreturn results");
+        let output = repoint::sign(opreturn_script_path, String::from("0x7202"), String::from("hello from repoint")).expect("fail to get opreturn results");
         println!("{}", String::from_utf8_lossy(&output.stdout));
     }
     println!("{:?}", pathbuf);
