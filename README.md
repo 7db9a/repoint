@@ -47,7 +47,7 @@ account = "repoint-demo"
 address = "$bitcoin-adress"
 ```
 
-## Publish 
+## Publish
 
 So far, everything has been local. To make it permanent, you push by signing with you private keys.
 
@@ -93,27 +93,29 @@ The app will be beta released with at least 12 functioning opcodes. Next major u
 
 `$ echo -n 'r' | perl -pe 's/(.)/sprintf("\\x%x", ord($1))/eg'`
 
+Opcodes 0x72, 0x720, 0x7200, and 0x701, all else equal, produces the same tx signature.
+
 ```
 Name                              Op-code     Op-code appendix                  Message
 
-Instantiate repoint               0x720     $app-ID                           none
-Add account                       0x721                                       $account-name
-Update profile text               0x722                                       $text
-Update profile pic                0x723                                       $uri
-Add repo                          0x724                                       $repo-name
-Update repo description           0x725     $repo-index                       $text
-Update repo tags                  0x726     $repo-index                       $text
-Add repo url                      0x727     $repo-index                       $uri
-Remove repo url                   0x728     $repo-index                       $uri
-Like repo                         0x729     $account-address $repo-index      none
-Unlike repo                       0x7210    $account-address $repo-index      none
-Flag repo                         0x7211    $account-address $repo-index      none
-Unflag                            0x7212    $account-address $repo-index      none
-Tip repo                          0x7213    
-Follow repo                       0x7214    $account-address $repo-index      none
-Unfollow repo                     0x7215    $account-address $repo-index      none
-Redirect account to account       0x7216    $account-address                  none
-Redirect repo to repo             0x7217    $account-address $repo-index      none
+Instantiate repoint               0x7202     $app-ID                           none
+Add account                       0x7203                                       $account-name
+Update profile text               0x7204                                       $text
+Update profile pic                0x7205                                       $uri
+Add repo                          0x7206                                       $repo-name
+Update repo description           0x7207     $repo-index                       $text
+Update repo tags                  0x7208     $repo-index                       $text
+Add repo url                      0x7209     $repo-index                       $uri
+Remove repo url                   0x7210     $repo-index                       $uri
+Like repo                         0x7211     $account-address $repo-index      none
+Unlike repo                       0x7212    $account-address $repo-index      none
+Flag repo                         0x7213    $account-address $repo-index      none
+Unflag                            0x7214    $account-address $repo-index      none
+Tip repo                          0x7215
+Follow repo                       0x7216    $account-address $repo-index      none
+Unfollow repo                     0x7217    $account-address $repo-index      none
+Redirect account to account       0x7218    $account-address                  none
+Redirect repo to repo             0x7219    $account-address $repo-index      none
 ```
 
 #### AppID

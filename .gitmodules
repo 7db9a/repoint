@@ -1,0 +1,3 @@
+[submodule "repoint_opreturn"]
+	path = repoint_opreturn
+	url = ../repoint_opreturn
