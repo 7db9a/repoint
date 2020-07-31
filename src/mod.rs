@@ -64,15 +64,15 @@ mod account_toml {
     fn test_opreturn() {
          let output = sign(
              "opreturn.sh".to_string(),
-             "0x7202".to_string(),
-             "hello from repoint".to_string()
+             "0x7202".to_string(), // opcode
+             "c2859d6ace2072662e22bd2e197c790fffca56ac6030800139800a3d1f87866f".to_string() // app-code
          ).expect("opreturn shell call failed");
 
          let stdout = String::from_utf8_lossy(&output.stdout);
 
          assert_eq!(
              stdout,
-             "010000000001000000000000000018006a0272021268656c6c6f2066726f6d207265706f696e7400000000\n"
+             "010000000001000000000000000046006a027202406332383539643661636532303732363632653232626432653139376337393066666663613536616336303330383030313339383030613364316638373836366600000000\n"
         )
     }
 }
