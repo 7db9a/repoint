@@ -3,6 +3,14 @@ use std::process::Command;
 use std::path::PathBuf;
 use cmd_lib::run_fun;
 
+pub fn init_sign(cmd: String) -> Result<std::process::Output, std::io::Error> {
+    sign(
+        cmd,
+        String::from("0x7202"),
+        String::from("c2859d6ace2072662e22bd2e197c790fffca56ac6030800139800a3d1f87866f")
+    )
+}
+
 pub fn sign(cmd: String, opcode: String, msg: String) -> Result<std::process::Output, std::io::Error> {
      Command::new("sh")
         .arg(cmd)
@@ -51,21 +59,20 @@ pub fn exists_opreturn(test: bool) {
 #[cfg(test)]
 mod account_toml {
     use std::path::PathBuf;
-    use super::{get_privkey, sign};
+    use super::{get_privkey, init_sign};
 
     #[test]
     fn test_get_privkey() {
-         let res = get_privkey();
 
-         assert_eq!(res, "test")
+         assert_eq!(
+             get_privkey(),
+             "5JZ4RXH4MoXpaUQMcJHo8DxhZtkf5U5VnYd9zZH8BRKZuAbxZEw")
     }
 
     #[test]
-    fn test_opreturn() {
-         let output = sign(
+    fn test_init_sign() {
+         let output = init_sign(
              "opreturn.sh".to_string(),
-             "0x7202".to_string(), // opcode
-             "c2859d6ace2072662e22bd2e197c790fffca56ac6030800139800a3d1f87866f".to_string() // app-code
          ).expect("opreturn shell call failed");
 
          let stdout = String::from_utf8_lossy(&output.stdout);
