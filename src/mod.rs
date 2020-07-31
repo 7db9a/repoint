@@ -11,6 +11,14 @@ pub fn init_sign(cmd: String) -> Result<std::process::Output, std::io::Error> {
     )
 }
 
+pub fn create_account_sign(cmd: String, account_name: String) -> Result<std::process::Output, std::io::Error> {
+    sign(
+        cmd,
+        String::from("0x7203"),
+        account_name
+    )
+}
+
 pub fn sign(cmd: String, opcode: String, msg: String) -> Result<std::process::Output, std::io::Error> {
      Command::new("sh")
         .arg(cmd)
@@ -59,7 +67,7 @@ pub fn exists_opreturn(test: bool) {
 #[cfg(test)]
 mod account_toml {
     use std::path::PathBuf;
-    use super::{get_privkey, init_sign};
+    use super::{get_privkey, init_sign, create_account_sign};
 
     #[test]
     fn test_get_privkey() {
@@ -80,6 +88,21 @@ mod account_toml {
          assert_eq!(
              stdout,
              "010000000001000000000000000046006a027202406332383539643661636532303732363632653232626432653139376337393066666663613536616336303330383030313339383030613364316638373836366600000000\n"
+        )
+    }
+
+    #[test]
+    fn test_create_account_sign() {
+         let output = create_account_sign(
+             "opreturn.sh".to_string(),
+             "repoint".to_string(),
+         ).expect("opreturn shell call failed");
+
+         let stdout = String::from_utf8_lossy(&output.stdout);
+
+         assert_eq!(
+             stdout,
+             "01000000000100000000000000000d006a027203077265706f696e7400000000\n"
         )
     }
 }
