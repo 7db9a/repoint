@@ -134,7 +134,27 @@ fn create_account_action(c: &Context) {
     //let repoint_res = repoint_file::repoint(&doc, Some("example"), "name");
 }
 
+// Instantiate's repoint: opreturns 0x7202 and creates repoint.toml
 fn init_action(c: &Context) {
+    let mut args = c.args.iter();
+    let mut path = "";
+    let mut pathbuf: PathBuf;
+    let arg_count = args.clone().count();
+    match arg_count {
+       1 => {
+           path = args.next().unwrap();
+       },
+       _ => ()
+    };
+
+    if let Some(opreturn_script_path) = c.string_flag("opreturn-script-path") {
+        println!("opreturn_script-path: {:?}", opreturn_script_path);
+        let output = repoint::sign(opreturn_script_path, String::from("0x7202"), String::from("hello from repoint")).expect("fail to get opreturn results");
+        println!("{}", String::from_utf8_lossy(&output.stdout));
+    }
+}
+
+fn add_repo_action(c: &Context) {
     let mut args = c.args.iter();
     let mut path = "";
     let mut pathbuf: PathBuf;
