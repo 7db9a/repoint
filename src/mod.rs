@@ -103,14 +103,14 @@ mod account_toml {
     fn test_create_account_sign() {
          let output = create_account_sign(
              "opreturn.sh".to_string(),
-             "repoint".to_string(),
+             "7db9a".to_string(),
          ).expect("opreturn shell call failed");
 
          let stdout = String::from_utf8_lossy(&output.stdout);
 
          assert_eq!(
              stdout,
-             "01000000000100000000000000000d006a027203077265706f696e7400000000\n"
+             "01000000000100000000000000000b006a02720305376462396100000000\n",
         )
     }
 
