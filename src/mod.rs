@@ -19,6 +19,14 @@ pub fn create_account_sign(cmd: String, account_name: String) -> Result<std::pro
     )
 }
 
+pub fn create_repo_sign(cmd: String, repo_name: String) -> Result<std::process::Output, std::io::Error> {
+    sign(
+        cmd,
+        String::from("0x7206"),
+        repo_name
+    )
+}
+
 pub fn sign(cmd: String, opcode: String, msg: String) -> Result<std::process::Output, std::io::Error> {
      Command::new("sh")
         .arg(cmd)
@@ -67,7 +75,7 @@ pub fn exists_opreturn(test: bool) {
 #[cfg(test)]
 mod account_toml {
     use std::path::PathBuf;
-    use super::{get_privkey, init_sign, create_account_sign};
+    use super::{get_privkey, init_sign, create_account_sign, create_repo_sign};
 
     #[test]
     fn test_get_privkey() {
@@ -103,6 +111,21 @@ mod account_toml {
          assert_eq!(
              stdout,
              "01000000000100000000000000000d006a027203077265706f696e7400000000\n"
+        )
+    }
+
+    #[test]
+    fn test_create_repo_sign() {
+         let output = create_repo_sign(
+             "opreturn.sh".to_string(),
+             "repoint".to_string(),
+         ).expect("opreturn shell call failed");
+
+         let stdout = String::from_utf8_lossy(&output.stdout);
+
+         assert_eq!(
+             stdout,
+             "01000000000100000000000000000d006a027206077265706f696e7400000000\n"
         )
     }
 }
