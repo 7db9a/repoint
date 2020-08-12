@@ -27,6 +27,14 @@ pub fn create_repo_sign(cmd: String, repo_name: String) -> Result<std::process::
     )
 }
 
+pub fn add_url_sign(cmd: String, url: String) -> Result<std::process::Output, std::io::Error> {
+    sign(
+        cmd,
+        String::from("0x7209"),
+        url
+    )
+}
+
 pub fn sign(cmd: String, opcode: String, msg: String) -> Result<std::process::Output, std::io::Error> {
      Command::new("sh")
         .arg(cmd)
@@ -75,7 +83,7 @@ pub fn exists_opreturn(test: bool) {
 #[cfg(test)]
 mod account_toml {
     use std::path::PathBuf;
-    use super::{get_privkey, init_sign, create_account_sign, create_repo_sign};
+    use super::*;
 
     #[test]
     fn test_get_privkey() {
@@ -126,6 +134,21 @@ mod account_toml {
          assert_eq!(
              stdout,
              "01000000000100000000000000000d006a027206077265706f696e7400000000\n"
+        )
+    }
+
+    #[test]
+    fn test_add_url_sign() {
+         let output = create_repo_sign(
+             "opreturn.sh".to_string(),
+             "https://github.com/7db9a/repoint".to_string(),
+         ).expect("opreturn shell call failed");
+
+         let stdout = String::from_utf8_lossy(&output.stdout);
+
+         assert_eq!(
+             stdout,
+             "010000000001000000000000000026006a0272062068747470733a2f2f6769746875622e636f6d2f37646239612f7265706f696e7400000000\n"
         )
     }
 }
