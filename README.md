@@ -154,6 +154,14 @@ Other protocols or technoloigiescan by layered on top of, such as ipfs or inter-
 
 ## Notes
 
+Text search for opreturn data.
+
+https://whatsonchain.com/search
+
+```
+curl --location --request GET  "https://api.whatsonchain.com/v1/bsv/main/tx/hash/d3ff07f8650cda5e50f3affb25a947f4a279f247874958bc9fa141be0212be81"
+```
+
 https://memo.cash/protocol
 
 https://github.com/bitcoin-sv-specs/op_return
